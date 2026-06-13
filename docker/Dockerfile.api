@@ -1,0 +1,58 @@
+# ==========================================
+# Stage 1: Base & Tooling
+# ==========================================
+FROM node:20-alpine AS base
+# Alpine linux needs libc6-compat for some native node modules
+RUN apk add --no-cache libc6-compat
+RUN npm install -g turbo
+
+# ==========================================
+# Stage 2: Prune Workspace
+# ==========================================
+FROM base AS pruner
+WORKDIR /app
+# Copy the entire workspace
+COPY . .
+# Extract only the files needed for the 'core-api' package
+RUN turbo prune --scope=core-api --docker
+
+# ==========================================
+# Stage 3: Build & Compile
+# ==========================================
+FROM base AS builder
+WORKDIR /app
+
+# First, install the dependencies (leveraging Docker cache)
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/package-lock.json ./package-lock.json
+RUN npm ci
+
+# Copy the actual source code extracted by the pruner
+COPY --from=pruner /app/out/full/ .
+# Build the project and its dependencies
+RUN turbo run build --filter=core-api...
+
+# ==========================================
+# Stage 4: Production Runner
+# ==========================================
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 expressjs
+USER expressjs
+
+# Copy only the built output and production node_modules
+COPY --from=builder /app/apps/core-api/package.json .
+COPY --from=builder /app/apps/core-api/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+
+# Expose the port defined in your environment
+EXPOSE 3000
+
+# Start the unified framework
+CMD ["node", "dist/index.js"]
