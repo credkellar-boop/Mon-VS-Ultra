@@ -1,20 +1,27 @@
 {
-  "name": "mon-vs-ultra-unified",
+  "name": "mon-vs-ultra",
+  "private": true,
   "version": "1.0.0",
-  "description": "Unified full-stack code engine and media distribution framework",
-  "main": "src/backend/server.js",
+  "description": "Unified full-stack enterprise code compilation and spatial AR workspace",
+  "workspaces": [
+    "src",
+    "ar-spatial/*",
+    "social-distribution"
+  ],
   "scripts": {
-    "start": "node src/backend/server.js",
-    "dev": "nodemon src/backend/server.js",
-    "lint": "eslint 'src/**/*.{js,jsx}'",
-    "format": "prettier --write 'src/**/*.{js,jsx,json,md}'"
-  },
-  "dependencies": {
-    "express": "^4.19.2"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.yml down"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "nodemon": "^3.1.0",
-    "prettier": "^3.2.5"
+    "turbo": "latest",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
   }
 }
