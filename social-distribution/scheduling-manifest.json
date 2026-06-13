@@ -1,0 +1,14 @@
+{
+  "pipelineVersion": "2026.1",
+  "queue": [
+    {
+      "postId": "reel_001",
+      "targetPlatform": "Instagram",
+      "contentType": "Reel",
+      "videoSource": "media-pipeline/exports/promo_9x16.mp4",
+      "scheduledTime": "2026-06-15T18:00:00Z",
+      "caption": "Building systems directly inside the Mon-VS-Ultra platform 🚀 #programming #developer #tech",
+      "status": "pending"
+    }
+  ]
+}
