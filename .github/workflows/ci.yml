@@ -1,0 +1,45 @@
+name: Mon-VS-Ultra CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build & Test Workspace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Dual-Linter
+        run: npm run lint
+
+      - name: Compile TypeScript & Core Pipelines
+        run: npm run build
+
+      - name: Execute Test Suite
+        run: npm run test
+
+  docker-verification:
+    name: Verify Docker Ecosystem
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        working-directory: ./docker
+        run: docker compose config -q
