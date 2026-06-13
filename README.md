@@ -1,4 +1,4 @@
-# Mon-VS-Ultra
+# 📸 Mon-VS-Ultra
 
 [![CI Pipeline](https://github.com/credkellar-boop/Mon-VS-Ultra/actions/workflows/ci.yml/badge.svg)](https://github.com/credkellar-boop/Mon-VS-Ultra/actions/workflows/ci.yml)
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-339933.svg?logo=nodedotjs&logoColor=white)
