@@ -1,0 +1,13 @@
+{
+  "ruleSet": "Snapchat-Style-Ephemeral-Protocol",
+  "mediaState": {
+    "defaultViewLimit": 1,
+    "allowReplay": true,
+    "maxReplaysAllowed": 1,
+    "serverRetentionPeriodMs": 86400000
+  },
+  "chatState": {
+    "clearTrigger": "after_viewed",
+    "retentionPolicy": "delete_immediately_on_close"
+  }
+}
