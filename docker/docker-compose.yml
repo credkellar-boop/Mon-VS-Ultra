@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend-engine:
+    build:
+      context: ../
+      dockerfile: docker/app.dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../src:/app/src
+      - ../media-pipeline:/app/media-pipeline
+    environment:
+      - NODE_ENV=development
+      - ENGINE_MODE=MON_VS_ULTRA
+
+  local-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ultra_admin
+      POSTGRES_PASSWORD: super_secret_dev_pass
+      POSTGRES_DB: mon_vs_workspace
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
