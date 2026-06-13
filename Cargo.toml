@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+
+# Point to directories containing your Rust crates
+members = [
+    "ar-spatial/core-engine",
+    "ar-spatial/render-pipeline",
+    "src/native-bindings"
+]
+
+exclude = [
+    "node_modules",
+    "docker"
+]
+
+# Standardize release profiles for the AR engine
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.32", features = ["full"] }
