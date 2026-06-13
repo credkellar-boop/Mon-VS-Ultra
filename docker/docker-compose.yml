@@ -1,29 +1,49 @@
 version: '3.8'
 
 services:
-  backend-engine:
+  core-api:
     build:
       context: ../
-      dockerfile: docker/app.dockerfile
+      dockerfile: docker/Dockerfile.api
+      target: runner # Uses the production-ready stage from your Dockerfile
+    container_name: mon-vs-core
     ports:
-      - "5000:5000"
-    volumes:
-      - ../src:/app/src
-      - ../media-pipeline:/app/media-pipeline
-    environment:
-      - NODE_ENV=development
-      - ENGINE_MODE=MON_VS_ULTRA
+      - "3000:3000"
+    env_file:
+      - ../.env
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+    restart: unless-stopped
 
-  local-db:
+  postgres-db:
     image: postgres:15-alpine
+    container_name: mon-vs-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-monvs_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-monvs_unified}
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: ultra_admin
-      POSTGRES_PASSWORD: super_secret_dev_pass
-      POSTGRES_DB: mon_vs_workspace
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-monvs_admin}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: mon-vs-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    command: redis-server --appendonly yes
 
 volumes:
-  db-data:
+  pgdata:
+  redisdata:
