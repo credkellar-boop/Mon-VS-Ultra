@@ -1,0 +1,17 @@
+{
+  "name": "Mon-VS-Ultra Dual-Linter Core",
+  "rulesets": {
+    "sonarLint": {
+      "cognitive-complexity-threshold": 15,
+      "prevent-dead-code": true,
+      "enforce-secure-protocols": true,
+      "max-nested-control-structures": 3
+    },
+    "eslint": {
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "eqeqeq": "error",
+      "curly": "error"
+    }
+  }
+}
